@@ -7,6 +7,7 @@
 #include <windows.h>
 #include <filesystem>
 #include <assert.h>
+#include <iomanip>
 
 struct SerializationContext
 {
@@ -17,7 +18,10 @@ struct SerializationContext
 
 inline void WriteColorRGB(std::ofstream& file, Color32 color)
 {
-    file << (uint32_t)color.Red << " " << (uint32_t)color.Green << " " << (uint32_t)color.Blue << " ";
+     file << std::setw(3) << (uint32_t)color.Red
+         << " " << std::setw(3) << (uint32_t)color.Green
+         << " " << std::setw(3) << (uint32_t)color.Blue
+         << " ";
 }
 
 inline Color32 ReadColorRGB(std::stringstream& ss)
