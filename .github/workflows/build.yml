@@ -1,0 +1,53 @@
+name: Build
+
+on:
+  push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: .
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Get current date
+        run: echo "TIME=date::$(date +'%Y-%m-%d_%H-%M')" >> $GITHUB_ENV
+    
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v3
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: |
+        msbuild /m /p:Configuration=Debug ${{env.SOLUTION_FILE_PATH}}
+        msbuild /m /p:Configuration=Release ${{env.SOLUTION_FILE_PATH}}
+    
+    - name: Upload Debug build
+      uses: actions/upload-artifact@v4
+      with:
+        name: InGameTimecycEditor_Debug_${{ env.TIME }}
+        path: |
+          build/Release/bin/InGameTimecycEditor.asi
+          build/Release/bin/InGameTimecycEditor.pdb
+
+    - name: Upload Release build
+      uses: actions/upload-artifact@v4
+      with:
+        name: InGameTimecycEditor_Release_${{ env.TIME }}
+        path: |
+          build/Debug/bin/InGameTimecycEditor.asi
+          build/Debug/bin/InGameTimecycEditor.pdb
