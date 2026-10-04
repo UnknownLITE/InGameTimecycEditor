@@ -21,7 +21,7 @@ jobs:
     - name: Generate timestamp
       shell: pwsh
       run: |
-        $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd_HH-mm-ss")
+        $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd_HH-mm")
         "TIMESTAMP=$timestamp" >> $env:GITHUB_ENV
 
     - uses: actions/checkout@v4
