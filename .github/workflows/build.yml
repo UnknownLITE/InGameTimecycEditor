@@ -18,6 +18,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
+    - name: Generate timestamp
+      shell: pwsh
+      run: |
+        $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd_HH-mm-ss")
+        "TIMESTAMP=$timestamp" >> $env:GITHUB_ENV
+
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -36,7 +42,7 @@ jobs:
     - name: Upload Debug build
       uses: actions/upload-artifact@v4
       with:
-        name: InGameTimecycEditor-Debug-${{ github.run_started_at }}
+        name: InGameTimecycEditor-Debug-${{ env.TIMESTAMP }}
         path: |
           build/Release/bin/InGameTimecycEditor.asi
           build/Release/bin/InGameTimecycEditor.pdb
@@ -44,7 +50,7 @@ jobs:
     - name: Upload Release build
       uses: actions/upload-artifact@v4
       with:
-        name: InGameTimecycEditor-Release-${{ github.run_started_at }}
+        name: InGameTimecycEditor-Release-${{ env.TIMESTAMP }}
         path: |
           build/Debug/bin/InGameTimecycEditor.asi
           build/Debug/bin/InGameTimecycEditor.pdb
